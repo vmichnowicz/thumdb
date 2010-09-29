@@ -1,0 +1,79 @@
+======================================
+ThumDB (v 0.1)
+
+ThumDB is CodeIgniter library that allows you to store JPG, PNG,
+and GIF images and their corresponding thumbnails in a MySQL
+database.
+
+NOTE: I have not used this library for anything important yet.
+I have no idea how it functions in the "real world." Once I use
+this library for a real project I will develop it, and the 
+corresponding documentation, much further. I have only tested
+this library with CI 2, thou I am sure it can get up and running
+on CI 1.7.2 with little to no work.
+
+by: Victor Michnowicz
+======================================
+
+*Sometimes* it is advantageous to sore images in a database (as
+opposed to on a file system). ThumDB aims to simplify that
+process.
+
+ThumDB sees two types of images: originals & thumbnails.
+
+Originals:
+--------------------------------------
+Originals are, well, the original images you want stored in the
+database. These images will generally be quite large. They are
+the high-resolution images you want all your thumbnails to be 
+based off.
+
+Originals have:
+	- unique ID
+	- alt text
+	- URL slug
+	- width
+	- height
+	- Image type (jpg, png, gif)
+
+Thumbnails:
+--------------------------------------
+Thumbnail generation is accomplished using the GD library. The
+thumbnail generation process is important - thumbnails are
+scaled proportinatly to the dimensions you specify. If you have
+an original image that is 1000px wide and 500px tall, and you 
+make a thumbnail that is 500px wide and 500px tall, then the 
+resulting image will have 250px chopped off each side of the 
+original image.
+
+ThumDB will not squish your image to fit inside the 500px x 500px
+box.
+
+Thumbnails are uniquely identified by four attributes:
+	- width
+	- height
+	- image type (jpg, png, gif)
+	- parent (original image) ID
+	
+Gettin' it done:
+--------------------------------------
+Once you have an original image in the database you can generate
+a thumbnail like so:
+
+$slug = 'my_image_slug';
+$id = $this->thumdb->id_from_slug($slug);
+$type = 'png';
+$width = 150;
+$height = 150;
+$expire = 6500;
+$this->thumdb->thumb_show($id, $type, $width, $height, $expire);
+
+This will output a 150 x 150 PNG image that will expire in 6500
+seconds. The expire value is in there just in case you are
+generating so many thumbnails and you don't want your database
+to overflow. Every time a thumbnail is generated a check it
+run to see if any expired thumbnails are chillin' in the
+database. If any are found they are terminated.
+
+If you never want your thumbnails to expire, you can set that
+value to NULL
