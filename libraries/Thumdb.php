@@ -286,7 +286,7 @@ class Thumdb {
 	 *
 	 * @return		bool
 	 */
-	orig_destroy($slug)
+	function orig_destroy($slug)
 	{
 	
 	}
